@@ -96,4 +96,16 @@ COPY ./web /var/www/html
 EXPOSE 80
 CMD ["apachectl", "-D", "FOREGROUND"]
 ```
+## Aprendizajes para mi Formación Profesional
 
+### 1. Gestión de Recursos en Entornos Multi-tenant
+En plataformas cloud donde múltiples clientes comparten infraestructura (AWS, Azure, GCP), limitar recursos previene el "noisy neighbor" - un contenedor que consume recursos excesivos afectando a otros servicios.
+
+### 2. Alta Disponibilidad con Políticas de Reinicio
+Servicios críticos como APIs de pago o bases de datos requieren estar siempre disponibles. Usar `--restart=unless-stopped` garantiza que tras un reinicio del servidor, los servicios se levanten automáticamente sin intervención manual.
+
+### 3. Optimización de Tiempos de Despliegue
+En CI/CD con múltiples builds diarios, entender el caché de Docker reduce tiempos de construcción de 10 minutos a 2 minutos, acelerando entregas a producción.
+
+### 4. Monitoreo Proactivo con Healthchecks
+En arquitecturas de microservicios, healthchecks permiten a orquestadores (Kubernetes, Docker Swarm) detectar servicios degradados y redirigir tráfico antes de que usuarios experimenten errores.
