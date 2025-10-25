@@ -52,18 +52,24 @@ docker build -t <nombre imagen>:<tag> .
  
 ### Ejecutar el archivo Dockerfile y construir una imagen en la versión 1.0
 No olvides verificar en qué directorio se encuentra el archivo Dockerfile
-```
 
+Al intentar construir la imagen con el Dockerfile original, el proceso falló en el paso 2 (RUN yum -y update) debido a que CentOS 7 llegó al final de su vida útil (EOL) el 30 de junio de 2024, y los repositorios oficiales de YUM fueron desactivados. El error fue: "Cannot find a valid baseurl for repo: base/7/x86_64".
+
+Para solucionarlo, modifiqué el Dockerfile agregando comandos sed para redirigir los repositorios a vault.centos.org (repositorios archivados).
+```
+docker build -t mi-apache:1.0 .
 ```
 
 **¿Cuántos pasos se han ejecutado?**
-# RESPONDER 
+# 5 pasos (FROM, tres RUN y un COPY)
 
 ### Inspeccionar la imagen creada
 # COMPLETAR CON UNA CAPTURA
 
 **Modificar el archivo index.html para incluir su nombre y luego crear una nueva versión de la imagen anterior**
 **¿Cuántos pasos se han ejecutado? ¿Observa algo diferente en la creación de la imagen**
+
+5 pasos. Lo que puedo observar es que ahora los RUN que se ejecutaron llevan un CACHED delante, esto porque Docker está reutilizando la capa de una construcción anterior en lugar de ejecutar nuevamente la instrucción dado que Docker solo reconstruye las capas que se han modificado desde la última vez que se ejecutó el comando. Para el caso del COPY no se pudo realizar esto puesto que se modificó el index.html
 
 ## Mecanismo de caché
 Docker usa un mecanismo de caché cuando crea imágenes para acelerar el proceso de construcción y evitar la repetición de pasos que no han cambiado. Cada instrucción en un Dockerfile crea una capa en la imagen final. Docker intenta reutilizar las capas de una construcción anterior si no han cambiado, lo que reduce significativamente el tiempo de construcción.
@@ -75,14 +81,14 @@ Docker usa un mecanismo de caché cuando crea imágenes para acelerar el proceso
 
 ### Crear un contenedor a partir de las imagen creada, mapear todos los puertos
 ```
-
+docker run -d --name mi-servidor-web -P mi-apache:2.0
 ```
 
 ### ¿Con que puerto host se está realizando el mapeo?
-# COMPLETAR CON LA RESPUESTA
+# 32768
 
 **¿Qué es una imagen huérfana?**
-# COMPLETAR CON LA RESPUESTA
+# Una imagen huérfana (dangling image) es una imagen de Docker que no tiene ninguna etiqueta (tag) asociada y aparece como <none>:<none> en el listado de imágenes. Esto ocurre cuando se construye una nueva versión de una imagen con el mismo nombre y tag, dejando la versión anterior sin identificación. Estas imágenes ocupan espacio en disco pero no están siendo utilizadas por ningún contenedor.
 
 ### Identificar imágenes huérfanas
 ```
