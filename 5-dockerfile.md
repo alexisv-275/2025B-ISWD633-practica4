@@ -55,6 +55,9 @@ No olvides verificar en qué directorio se encuentra el archivo Dockerfile
 
 Al intentar construir la imagen con el Dockerfile original, el proceso falló en el paso 2 (RUN yum -y update) debido a que CentOS 7 llegó al final de su vida útil (EOL) el 30 de junio de 2024, y los repositorios oficiales de YUM fueron desactivados. El error fue: "Cannot find a valid baseurl for repo: base/7/x86_64".
 
+<img width="1104" height="219" alt="image" src="https://github.com/user-attachments/assets/6690a80e-cbcb-4e35-88b1-ac70b5ae9f41" />
+
+
 Para solucionarlo, modifiqué el Dockerfile agregando comandos sed para redirigir los repositorios a vault.centos.org (repositorios archivados).
 ```
 docker build -t mi-apache:1.0 .
@@ -62,14 +65,20 @@ docker build -t mi-apache:1.0 .
 
 **¿Cuántos pasos se han ejecutado?**
 # 5 pasos (FROM, tres RUN y un COPY)
+<img width="1470" height="401" alt="image" src="https://github.com/user-attachments/assets/89ab8b51-54fe-4db1-a88c-64a97c224cc7" />
+
 
 ### Inspeccionar la imagen creada
 # COMPLETAR CON UNA CAPTURA
+<img width="725" height="74" alt="image" src="https://github.com/user-attachments/assets/2d7b3d23-2156-4afc-b54f-a4885748672c" />
+
 
 **Modificar el archivo index.html para incluir su nombre y luego crear una nueva versión de la imagen anterior**
 **¿Cuántos pasos se han ejecutado? ¿Observa algo diferente en la creación de la imagen**
 
 5 pasos. Lo que puedo observar es que ahora los RUN que se ejecutaron llevan un CACHED delante, esto porque Docker está reutilizando la capa de una construcción anterior en lugar de ejecutar nuevamente la instrucción dado que Docker solo reconstruye las capas que se han modificado desde la última vez que se ejecutó el comando. Para el caso del COPY no se pudo realizar esto puesto que se modificó el index.html
+<img width="1473" height="537" alt="image" src="https://github.com/user-attachments/assets/6c9b773a-f741-48b0-9328-31f13a7198f5" />
+
 
 ## Mecanismo de caché
 Docker usa un mecanismo de caché cuando crea imágenes para acelerar el proceso de construcción y evitar la repetición de pasos que no han cambiado. Cada instrucción en un Dockerfile crea una capa en la imagen final. Docker intenta reutilizar las capas de una construcción anterior si no han cambiado, lo que reduce significativamente el tiempo de construcción.
@@ -86,6 +95,10 @@ docker run -d --name mi-servidor-web -P mi-apache:2.0
 
 ### ¿Con que puerto host se está realizando el mapeo?
 # 32768
+
+<img width="419" height="271" alt="image" src="https://github.com/user-attachments/assets/56f1a37a-9474-4955-a8d8-d6134412069d" />
+<img width="1219" height="66" alt="image" src="https://github.com/user-attachments/assets/bbc4abe8-b9e1-44b7-9e58-fb0116e7cbe2" />
+
 
 **¿Qué es una imagen huérfana?**
 # Una imagen huérfana (dangling image) es una imagen de Docker que no tiene ninguna etiqueta (tag) asociada y aparece como <none>:<none> en el listado de imágenes. Esto ocurre cuando se construye una nueva versión de una imagen con el mismo nombre y tag, dejando la versión anterior sin identificación. Estas imágenes ocupan espacio en disco pero no están siendo utilizadas por ningún contenedor.
